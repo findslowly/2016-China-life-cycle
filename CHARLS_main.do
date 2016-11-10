@@ -659,6 +659,7 @@ local demo_w1_demog ba002_1 ba002_2 ba002_3 be003 ba004 ///
                     bb001 ///
                     bc001 ///
                     bd001 ///
+                    bd00* ///
                     be001 be003 be004_1 be009_1 ///
                     rgender
 merge 1:1 ID using "`wave_1_demog'", keepusing(`demo_w1_demog') nogen
@@ -890,6 +891,12 @@ gen s`wv'educ_c =.
 spouse raeduc_c, result(s`wv'educ_c) wave(`wv')
 label variable s`wv'educ_c "s`wv'educ_c:w`wv' S education (categ)"
 label values s`wv'educ_c raeduc_c
+
+***education: total years 
+gen raeduc_y = . 
+replace raeduc_y = 0	 if bd001==1
+replace raeduc_y = bd002 if bd001==2
+replace raeduc_y = bd006-bd005 if inlist(bd001, 3,4,5,6,7,8,9,10,11) & bd005 != .d & bd006 != .d & bd006 > bd005
 
 ***education: isced category****
 *respondent
@@ -4844,6 +4851,21 @@ spouse r`wv'work, result(s`wv'work) wave(`wv')
 label variable s`wv'work "s`wv'work:w`wv' S currently working"
 label value s`wv'work work
 
+*** currently working FOR PAY
+*respondent
+gen r`wv'workpay=.
+missing_H r`wv'wstat, result(r`wv'workpay)
+replace r`wv'workpay = 0 if inlist(r`wv'wstat,4, 5,6,7)
+replace r`wv'workpay = 1 if inlist(r`wv'wstat,1,2,3)
+label variable r`wv'workpay "r`wv'work:w1 r currently working for pay"
+label value r`wv'workpay workpay
+
+*spouse 
+gen s`wv'workpay =.
+spouse r`wv'workpay, result(s`wv'workpay) wave(`wv')
+label variable s`wv'workpay "s`wv'work:w`wv' S currently working for pay"
+label value s`wv'workpay workpay
+
 ***Works 2nd Job****
 *respondent
 gen r`wv'work2=.
@@ -5173,10 +5195,10 @@ label variable s`wv'jhour2"s`wv'jhour2:w`wv' S hours worked/week on other jobs"
 *** Hours worked per week (main job + other jobs) *** 
 gen r`wv'jhourstot=. 
 missing_H r`wv'jhours_c r`wv'jhour2, result(r`wv'jhourstot)
-replace r`wv'jhourtot = r`wv'jhours_c if !mi(r`wv'jhours_c) & mi(r`wv'jhour2) 
-replace r`wv'jhourtot = r`wv'jhour2   if !mi(r`wv'jhour2) & mi(r`wv'jhours_c)
-replace r`wv'jhourtot = r`wv'jhours_c + r`wv'jhour2 if !mi(r`wv'jhours_c) & !mi(r`wv'jhour2)
-label variable r`wv'jhourtot "r`wv'jhourtot:w`wv' R total hours worked per week on main job and side jobs"
+replace r`wv'jhourstot = r`wv'jhours_c if !mi(r`wv'jhours_c) & mi(r`wv'jhour2) 
+replace r`wv'jhourstot = r`wv'jhour2   if !mi(r`wv'jhour2) & mi(r`wv'jhours_c)
+replace r`wv'jhourstot = r`wv'jhours_c + r`wv'jhour2 if !mi(r`wv'jhours_c) & !mi(r`wv'jhour2)
+label variable r`wv'jhourstot "r`wv'jhourstot:w`wv' R total hours worked per week on main job and side jobs"
 
 ***Weeks worked per year (all farm work)***
 *respondent
@@ -11294,6 +11316,21 @@ spouse r`wv'work, result(s`wv'work) wave(`wv')
 label variable s`wv'work "s`wv'work:w`wv' S currently working"
 label value s`wv'work work
 
+*** currently working FOR PAY
+*respondent
+gen r`wv'workpay=.
+missing_H r`wv'wstat, result(r`wv'workpay)
+replace r`wv'workpay = 0 if inlist(r`wv'wstat,4, 5,6,7)
+replace r`wv'workpay = 1 if inlist(r`wv'wstat,1,2,3)
+label variable r`wv'workpay "r`wv'work:w1 r currently working for pay"
+label value r`wv'workpay workpay
+
+*spouse 
+gen s`wv'workpay =.
+spouse r`wv'workpay, result(s`wv'workpay) wave(`wv')
+label variable s`wv'workpay "s`wv'work:w`wv' S currently working for pay"
+label value s`wv'workpay workpay
+
 ***Works 2nd Job****
 *respondent
 gen r`wv'work2=.
@@ -11624,10 +11661,10 @@ label variable s`wv'jhour2"s`wv'jhour2:w`wv' S hours worked/week on other jobs"
 *** Hours worked per week (main job + other jobs) *** 
 gen r`wv'jhourstot=. 
 missing_H r`wv'jhours_c r`wv'jhour2, result(r`wv'jhourstot)
-replace r`wv'jhourtot = r`wv'jhours_c if !mi(r`wv'jhours_c) & mi(r`wv'jhour2) 
-replace r`wv'jhourtot = r`wv'jhour2   if !mi(r`wv'jhour2) & mi(r`wv'jhours_c)
-replace r`wv'jhourtot = r`wv'jhours_c + r`wv'jhour2 if !mi(r`wv'jhours_c) & !mi(r`wv'jhour2)
-label variable r`wv'jhourtot "r`wv'jhourtot:w`wv' R total hours worked per week on main job and side jobs"
+replace r`wv'jhourstot = r`wv'jhours_c if !mi(r`wv'jhours_c) & mi(r`wv'jhour2) 
+replace r`wv'jhourstot = r`wv'jhour2   if !mi(r`wv'jhour2) & mi(r`wv'jhours_c)
+replace r`wv'jhourstot = r`wv'jhours_c + r`wv'jhour2 if !mi(r`wv'jhours_c) & !mi(r`wv'jhour2)
+label variable r`wv'jhourstot "r`wv'jhourstot:w`wv' R total hours worked per week on main job and side jobs"
 
 ***Weeks worked per year (all farm work)***
 *respondent
